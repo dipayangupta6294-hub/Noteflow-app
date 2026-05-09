@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NoteFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">NoteFlow</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+
+    <button class="new-note-btn" id="newNoteBtn">
+      <span>+</span> New Note
+    </button>
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search notes..." />
+    </div>
+
+    <nav class="categories">
+      <p class="cat-label">CATEGORIES</p>
+      <ul id="categoryList">
+        <li class="cat-item active" data-cat="All">
+          <span class="cat-dot" style="background:#4361EE"></span> All Notes
+          <span class="cat-count" id="countAll">0</span>
+        </li>
+        <li class="cat-item" data-cat="Personal">
+          <span class="cat-dot" style="background:#f72585"></span> Personal
+          <span class="cat-count" id="countPersonal">0</span>
+        </li>
+        <li class="cat-item" data-cat="Work">
+          <span class="cat-dot" style="background:#4cc9f0"></span> Work
+          <span class="cat-count" id="countWork">0</span>
+        </li>
+        <li class="cat-item" data-cat="Ideas">
+          <span class="cat-dot" style="background:#f8961e"></span> Ideas
+          <span class="cat-count" id="countIdeas">0</span>
+        </li>
+        <li class="cat-item" data-cat="Pinned">
+          <span class="cat-dot" style="background:#4361EE"></span> 📌 Pinned
+          <span class="cat-count" id="countPinned">0</span>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <h1 class="page-title" id="pageTitle">All Notes</h1>
+      <span class="note-count-label" id="noteCountLabel"></span>
+    </div>
+
+    <!-- NOTES GRID -->
+    <div class="notes-grid" id="notesGrid">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📝</div>
+        <p>No notes yet.<br>Click <strong>+ New Note</strong> to begin.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <input type="text" id="noteTitle" class="note-title-input" placeholder="Note title..." maxlength="80"/>
+        <div class="modal-actions">
+          <button class="pin-btn" id="pinBtn" title="Pin note">📌</button>
+          <button class="delete-btn" id="deleteBtn" title="Delete note">🗑</button>
+          <button class="close-btn" id="closeBtn">✕</button>
+        </div>
+      </div>
+      <div class="modal-meta">
+        <select id="catSelect" class="cat-select">
+          <option value="Personal">Personal</option>
+          <option value="Work">Work</option>
+          <option value="Ideas">Ideas</option>
+        </select>
+        <span class="note-date" id="noteDate"></span>
+      </div>
+      <textarea id="noteBody" class="note-body" placeholder="Start writing..."></textarea>
+      <div class="modal-footer">
+        <span class="autosave-label" id="autosaveLabel">✓ Auto-saved</span>
+        <button class="save-btn" id="saveBtn">Save Note</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
