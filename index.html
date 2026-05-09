@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NoteFlow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,17 +14,18 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="logo">
-        <span class="logo-icon">✦</span>
-        <span class="logo-text">NoteFlow</span>
+        <span class="logo-mark">✦</span>
+        <div>
+          <div class="logo-text">NoteFlow</div>
+          <div class="logo-sub">Your personal journal</div>
+        </div>
       </div>
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">
         <span id="themeIcon">🌙</span>
       </button>
     </div>
 
-    <button class="new-note-btn" id="newNoteBtn">
-      <span>+</span> New Note
-    </button>
+    <div class="sidebar-divider"><span>✦</span></div>
 
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
@@ -32,10 +33,10 @@
     </div>
 
     <nav class="categories">
-      <p class="cat-label">CATEGORIES</p>
+      <p class="cat-label">— COLLECTIONS —</p>
       <ul id="categoryList">
         <li class="cat-item active" data-cat="All">
-          <span class="cat-dot" style="background:#4361EE"></span> All Notes
+          <span class="cat-dot" style="background:#c9a84c"></span> All Notes
           <span class="cat-count" id="countAll">0</span>
         </li>
         <li class="cat-item" data-cat="Personal">
@@ -51,11 +52,17 @@
           <span class="cat-count" id="countIdeas">0</span>
         </li>
         <li class="cat-item" data-cat="Pinned">
-          <span class="cat-dot" style="background:#4361EE"></span> 📌 Pinned
+          <span class="cat-dot" style="background:#c9a84c"></span> 📌 Pinned
           <span class="cat-count" id="countPinned">0</span>
         </li>
       </ul>
     </nav>
+
+    <div class="sidebar-quote">
+      <span class="quote-mark">"</span>
+      <p>A mind stretched by a new experience can never go back to its old dimensions.</p>
+      <span class="quote-author">— Oliver Wendell Holmes</span>
+    </div>
   </aside>
 
   <!-- MAIN -->
@@ -64,29 +71,67 @@
     <!-- TOP BAR -->
     <div class="topbar">
       <button class="menu-toggle" id="menuToggle">☰</button>
-      <h1 class="page-title" id="pageTitle">All Notes</h1>
-      <span class="note-count-label" id="noteCountLabel"></span>
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">All Notes</h1>
+        <span class="note-count-label" id="noteCountLabel"></span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbarDate"></span>
+      </div>
+    </div>
+
+    <!-- DECORATIVE BANNER -->
+    <div class="banner">
+      <div class="banner-ornament">❧</div>
+      <div class="banner-text">
+        <span class="banner-greeting" id="bannerGreeting">Good Morning</span>
+        <span class="banner-sub">What's on your mind today?</span>
+      </div>
+      <div class="banner-ornament flipped">❧</div>
+    </div>
+
+    <!-- QUICK ADD NOTE -->
+    <div class="quick-add-wrap">
+      <div class="quick-add-card">
+        <div class="quick-add-top">
+          <input type="text" id="quickTitle" class="quick-title" placeholder="✦  Write a title..."/>
+          <select id="quickCat" class="quick-cat">
+            <option value="Personal">Personal</option>
+            <option value="Work">Work</option>
+            <option value="Ideas">Ideas</option>
+          </select>
+        </div>
+        <textarea id="quickBody" class="quick-body" placeholder="Begin writing your note here..."></textarea>
+        <div class="quick-add-footer">
+          <span class="quick-hint">Ctrl+Enter to save quickly</span>
+          <button class="quick-save-btn" id="quickSaveBtn">＋ Add Note</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION DIVIDER -->
+    <div class="section-divider">
+      <span class="divider-line"></span>
+      <span class="divider-icon">✦</span>
+      <span class="divider-line"></span>
     </div>
 
     <!-- NOTES GRID -->
-    <div class="notes-grid" id="notesGrid">
-      <div class="empty-state" id="emptyState">
-        <div class="empty-icon">📝</div>
-        <p>No notes yet.<br>Click <strong>+ New Note</strong> to begin.</p>
-      </div>
-    </div>
+    <div class="notes-grid" id="notesGrid"></div>
   </main>
 
-  <!-- MODAL -->
+  <!-- EDIT MODAL -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modal">
       <div class="modal-header">
-        <input type="text" id="noteTitle" class="note-title-input" placeholder="Note title..." maxlength="80"/>
-        <div class="modal-actions">
-          <button class="pin-btn" id="pinBtn" title="Pin note">📌</button>
-          <button class="delete-btn" id="deleteBtn" title="Delete note">🗑</button>
-          <button class="close-btn" id="closeBtn">✕</button>
+        <div class="modal-header-top">
+          <div class="modal-actions">
+            <button class="pin-btn" id="pinBtn" title="Pin note">📌</button>
+            <button class="delete-btn" id="deleteBtn" title="Delete note">🗑</button>
+            <button class="close-btn" id="closeBtn">✕</button>
+          </div>
         </div>
+        <input type="text" id="noteTitle" class="note-title-input" placeholder="Note title..." maxlength="80"/>
       </div>
       <div class="modal-meta">
         <select id="catSelect" class="cat-select">
