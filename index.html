@@ -5,120 +5,193 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NoteFlow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <span class="logo-mark">✦</span>
-        <div>
-          <div class="logo-text">NoteFlow</div>
-          <div class="logo-sub">Your personal journal</div>
+  <!-- ══ AUTH SCREEN ══ -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="auth-logo-mark">✦</span>
+        <span class="auth-logo-text">NoteFlow</span>
+      </div>
+      <p class="auth-tagline">Your elegant personal journal</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-form" id="loginForm">
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="loginUser" placeholder="Enter your username" autocomplete="username"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password"/>
+        </div>
+        <div class="auth-error" id="loginError"></div>
+        <button class="auth-btn" onclick="handleLogin()">Sign In →</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="auth-form hidden" id="registerForm">
+        <div class="auth-field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Your display name"/>
+        </div>
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="regUser" placeholder="Choose a username"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="regPass" placeholder="Create a password"/>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="regPass2" placeholder="Repeat your password"/>
+        </div>
+        <div class="auth-error" id="registerError"></div>
+        <button class="auth-btn" onclick="handleRegister()">Create Account →</button>
+      </div>
+
+      <div class="auth-footer">✦ All data stored securely on your device ✦</div>
+    </div>
+  </div>
+
+  <!-- ══ APP ══ -->
+  <div class="app-wrap hidden" id="appWrap">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-mark">✦</span>
+          <div>
+            <div class="logo-text">NoteFlow</div>
+            <div class="logo-sub" id="sidebarUser">Welcome</div>
+          </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+
+      <div class="sidebar-divider"><span>✦</span></div>
+
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search notes..." />
+      </div>
+
+      <nav class="categories">
+        <p class="cat-label">— COLLECTIONS —</p>
+        <ul id="categoryList">
+          <li class="cat-item active" data-cat="All">
+            <span class="cat-dot" style="background:#c9a84c"></span> All Notes
+            <span class="cat-count" id="countAll">0</span>
+          </li>
+          <li class="cat-item" data-cat="Personal">
+            <span class="cat-dot" style="background:#f72585"></span> Personal
+            <span class="cat-count" id="countPersonal">0</span>
+          </li>
+          <li class="cat-item" data-cat="Work">
+            <span class="cat-dot" style="background:#4cc9f0"></span> Work
+            <span class="cat-count" id="countWork">0</span>
+          </li>
+          <li class="cat-item" data-cat="Ideas">
+            <span class="cat-dot" style="background:#f8961e"></span> Ideas
+            <span class="cat-count" id="countIdeas">0</span>
+          </li>
+          <li class="cat-item" data-cat="Pinned">
+            <span class="cat-dot" style="background:#c9a84c"></span> 📌 Pinned
+            <span class="cat-count" id="countPinned">0</span>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="importance-legend">
+        <p class="cat-label">— IMPORTANCE —</p>
+        <div class="legend-items">
+          <span class="legend-item imp-low">● Low</span>
+          <span class="legend-item imp-medium">● Medium</span>
+          <span class="legend-item imp-high">● High</span>
+          <span class="legend-item imp-urgent">● Urgent</span>
         </div>
       </div>
-      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-        <span id="themeIcon">🌙</span>
-      </button>
-    </div>
 
-    <div class="sidebar-divider"><span>✦</span></div>
-
-    <div class="search-wrap">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="searchInput" class="search-input" placeholder="Search notes..." />
-    </div>
-
-    <nav class="categories">
-      <p class="cat-label">— COLLECTIONS —</p>
-      <ul id="categoryList">
-        <li class="cat-item active" data-cat="All">
-          <span class="cat-dot" style="background:#c9a84c"></span> All Notes
-          <span class="cat-count" id="countAll">0</span>
-        </li>
-        <li class="cat-item" data-cat="Personal">
-          <span class="cat-dot" style="background:#f72585"></span> Personal
-          <span class="cat-count" id="countPersonal">0</span>
-        </li>
-        <li class="cat-item" data-cat="Work">
-          <span class="cat-dot" style="background:#4cc9f0"></span> Work
-          <span class="cat-count" id="countWork">0</span>
-        </li>
-        <li class="cat-item" data-cat="Ideas">
-          <span class="cat-dot" style="background:#f8961e"></span> Ideas
-          <span class="cat-count" id="countIdeas">0</span>
-        </li>
-        <li class="cat-item" data-cat="Pinned">
-          <span class="cat-dot" style="background:#c9a84c"></span> 📌 Pinned
-          <span class="cat-count" id="countPinned">0</span>
-        </li>
-      </ul>
-    </nav>
-
-    <div class="sidebar-quote">
-      <span class="quote-mark">"</span>
-      <p>A mind stretched by a new experience can never go back to its old dimensions.</p>
-      <span class="quote-author">— Oliver Wendell Holmes</span>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- TOP BAR -->
-    <div class="topbar">
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <div class="topbar-left">
-        <h1 class="page-title" id="pageTitle">All Notes</h1>
-        <span class="note-count-label" id="noteCountLabel"></span>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="handleLogout()">⎋ Sign Out</button>
       </div>
-      <div class="topbar-right">
-        <span class="topbar-date" id="topbarDate"></span>
-      </div>
-    </div>
+    </aside>
 
-    <!-- DECORATIVE BANNER -->
-    <div class="banner">
-      <div class="banner-ornament">❧</div>
-      <div class="banner-text">
-        <span class="banner-greeting" id="bannerGreeting">Good Morning</span>
-        <span class="banner-sub">What's on your mind today?</span>
-      </div>
-      <div class="banner-ornament flipped">❧</div>
-    </div>
+    <!-- MAIN -->
+    <main class="main" id="mainContent">
 
-    <!-- QUICK ADD NOTE -->
-    <div class="quick-add-wrap">
-      <div class="quick-add-card">
-        <div class="quick-add-top">
-          <input type="text" id="quickTitle" class="quick-title" placeholder="✦  Write a title..."/>
-          <select id="quickCat" class="quick-cat">
-            <option value="Personal">Personal</option>
-            <option value="Work">Work</option>
-            <option value="Ideas">Ideas</option>
-          </select>
+      <!-- TOP BAR -->
+      <div class="topbar">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="topbar-left">
+          <h1 class="page-title" id="pageTitle">All Notes</h1>
+          <span class="note-count-label" id="noteCountLabel"></span>
         </div>
-        <textarea id="quickBody" class="quick-body" placeholder="Begin writing your note here..."></textarea>
-        <div class="quick-add-footer">
-          <span class="quick-hint">Ctrl+Enter to save quickly</span>
-          <button class="quick-save-btn" id="quickSaveBtn">＋ Add Note</button>
+        <div class="topbar-right">
+          <span class="topbar-date" id="topbarDate"></span>
+          <button class="refresh-btn" onclick="refreshApp()" title="Refresh">↻</button>
         </div>
       </div>
-    </div>
 
-    <!-- SECTION DIVIDER -->
-    <div class="section-divider">
-      <span class="divider-line"></span>
-      <span class="divider-icon">✦</span>
-      <span class="divider-line"></span>
-    </div>
+      <!-- BANNER -->
+      <div class="banner">
+        <div class="banner-ornament">❧</div>
+        <div class="banner-text">
+          <span class="banner-greeting" id="bannerGreeting">Good Morning</span>
+          <span class="banner-sub">What's on your mind today?</span>
+        </div>
+        <div class="banner-ornament flipped">❧</div>
+      </div>
 
-    <!-- NOTES GRID -->
-    <div class="notes-grid" id="notesGrid"></div>
-  </main>
+      <!-- QUICK ADD NOTE -->
+      <div class="quick-add-wrap">
+        <div class="quick-add-card">
+          <div class="quick-add-top">
+            <input type="text" id="quickTitle" class="quick-title" placeholder="✦  Write a title..."/>
+            <select id="quickCat" class="quick-cat">
+              <option value="Personal">Personal</option>
+              <option value="Work">Work</option>
+              <option value="Ideas">Ideas</option>
+            </select>
+            <select id="quickImportance" class="quick-cat importance-select">
+              <option value="low">🟢 Low</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="high">🟠 High</option>
+              <option value="urgent">🔴 Urgent</option>
+            </select>
+          </div>
+          <textarea id="quickBody" class="quick-body" placeholder="Begin writing your note here...&#10;Tip: Start with 1. and press Enter for auto-numbering!"></textarea>
+          <div class="quick-add-footer">
+            <span class="quick-hint">Ctrl+Enter to save quickly</span>
+            <button class="quick-save-btn" id="quickSaveBtn">＋ Add Note</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION DIVIDER -->
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-icon">✦</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- NOTES GRID -->
+      <div class="notes-grid" id="notesGrid"></div>
+    </main>
+  </div>
 
   <!-- EDIT MODAL -->
   <div class="modal-overlay" id="modalOverlay">
@@ -139,9 +212,15 @@
           <option value="Work">Work</option>
           <option value="Ideas">Ideas</option>
         </select>
+        <select id="importanceSelect" class="cat-select">
+          <option value="low">🟢 Low</option>
+          <option value="medium">🟡 Medium</option>
+          <option value="high">🟠 High</option>
+          <option value="urgent">🔴 Urgent</option>
+        </select>
         <span class="note-date" id="noteDate"></span>
       </div>
-      <textarea id="noteBody" class="note-body" placeholder="Start writing..."></textarea>
+      <textarea id="noteBody" class="note-body" placeholder="Start writing...&#10;Tip: Type 1. and press Enter for auto-numbered lists!"></textarea>
       <div class="modal-footer">
         <span class="autosave-label" id="autosaveLabel">✓ Auto-saved</span>
         <button class="save-btn" id="saveBtn">Save Note</button>
