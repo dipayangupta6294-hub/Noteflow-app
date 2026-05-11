@@ -292,8 +292,10 @@ window.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       const content = cur.replace(/^(\s*)(\d+)([.)]\s)/, '').trim();
       if (!content) {
-        ta.value = val.substring(0, start - cur.length) + val.substring(start);
-        ta.selectionStart = ta.selectionEnd = start - cur.length;
+        // Remove the empty list line AND its preceding newline to avoid leaving a blank line
+        const removeFrom = Math.max(0, start - cur.length - 1);
+        ta.value = val.substring(0, removeFrom) + val.substring(start);
+        ta.selectionStart = ta.selectionEnd = removeFrom;
       } else {
         insertAt(ta, '\n' + numMatch[1] + (parseInt(numMatch[2]) + 1) + numMatch[3]);
       }
@@ -301,8 +303,10 @@ window.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       const content = cur.replace(/^(\s*)([-*]\s)/, '').trim();
       if (!content) {
-        ta.value = val.substring(0, start - cur.length) + val.substring(start);
-        ta.selectionStart = ta.selectionEnd = start - cur.length;
+        // Remove the empty list line AND its preceding newline to avoid leaving a blank line
+        const removeFrom = Math.max(0, start - cur.length - 1);
+        ta.value = val.substring(0, removeFrom) + val.substring(start);
+        ta.selectionStart = ta.selectionEnd = removeFrom;
       } else {
         insertAt(ta, '\n' + bulletMatch[1] + bulletMatch[2]);
       }
@@ -365,8 +369,20 @@ window.addEventListener('DOMContentLoaded', function () {
 
     notesGrid.innerHTML = '';
     if (!filtered.length) {
-      notesGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>
-        <p>${searchQuery ? 'No notes match your search.' : 'Your collection is empty.<br/>Write your first note above.'}</p></div>`;
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'empty-state';
+      const icon = document.createElement('div');
+      icon.className = 'empty-icon';
+      icon.textContent = '✦';
+      const msg = document.createElement('p');
+      if (searchQuery) {
+        msg.textContent = 'No notes match your search.';
+      } else {
+        msg.innerHTML = 'Your collection is empty.<br/>Write your first note above.';
+      }
+      emptyDiv.appendChild(icon);
+      emptyDiv.appendChild(msg);
+      notesGrid.appendChild(emptyDiv);
       noteCountLabel.textContent = ''; updateCounts(); return;
     }
 
@@ -405,6 +421,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   // ══ OPEN NOTE ══
   function openNote(id) {
+    clearTimeout(autosaveTimer); // cancel any pending autosave from a previously open note
     activeNote = notes.find(n => n.id === id);
     if (!activeNote) return;
     noteTitle.value   = activeNote.title;
