@@ -130,12 +130,14 @@ window.addEventListener('DOMContentLoaded', function () {
     const pass     = regPassEl.value;
     const pass2    = regPass2El.value;
     regErrorEl.textContent = '';
-    if (!name||!username||!pass||!pass2) { regErrorEl.textContent = 'Please fill in all fields.'; return; }
-    if (pass !== pass2)    { regErrorEl.textContent = 'Passwords do not match.'; return; }
-    if (pass.length < 4)   { regErrorEl.textContent = 'Password must be at least 4 characters.'; return; }
+    if (!name)     { regErrorEl.textContent = 'Please enter your full name.'; return; }
+    if (!username) { regErrorEl.textContent = 'Please choose a username.'; return; }
+    if (!pass)     { regErrorEl.textContent = 'Please enter a password.'; return; }
+    if (pass.length < 4) { regErrorEl.textContent = 'Password must be at least 4 characters.'; return; }
+    if (pass !== pass2)  { regErrorEl.textContent = 'Passwords do not match.'; return; }
     if (!/^[a-z0-9_]+$/.test(username)) { regErrorEl.textContent = 'Username: letters, numbers and _ only.'; return; }
     const users = getUsers();
-    if (users[username])   { regErrorEl.textContent = 'Username already taken.'; return; }
+    if (users[username]) { regErrorEl.textContent = 'Username already taken. Please choose another.'; return; }
     users[username] = { name, password: btoa(pass) };
     saveUsers(users);
     loginSuccess(username, name, false);
@@ -292,10 +294,8 @@ window.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       const content = cur.replace(/^(\s*)(\d+)([.)]\s)/, '').trim();
       if (!content) {
-        // Remove the empty list line AND its preceding newline to avoid leaving a blank line
-        const removeFrom = Math.max(0, start - cur.length - 1);
-        ta.value = val.substring(0, removeFrom) + val.substring(start);
-        ta.selectionStart = ta.selectionEnd = removeFrom;
+        ta.value = val.substring(0, start - cur.length) + val.substring(start);
+        ta.selectionStart = ta.selectionEnd = start - cur.length;
       } else {
         insertAt(ta, '\n' + numMatch[1] + (parseInt(numMatch[2]) + 1) + numMatch[3]);
       }
@@ -303,10 +303,8 @@ window.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       const content = cur.replace(/^(\s*)([-*]\s)/, '').trim();
       if (!content) {
-        // Remove the empty list line AND its preceding newline to avoid leaving a blank line
-        const removeFrom = Math.max(0, start - cur.length - 1);
-        ta.value = val.substring(0, removeFrom) + val.substring(start);
-        ta.selectionStart = ta.selectionEnd = removeFrom;
+        ta.value = val.substring(0, start - cur.length) + val.substring(start);
+        ta.selectionStart = ta.selectionEnd = start - cur.length;
       } else {
         insertAt(ta, '\n' + bulletMatch[1] + bulletMatch[2]);
       }
@@ -369,20 +367,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
     notesGrid.innerHTML = '';
     if (!filtered.length) {
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'empty-state';
-      const icon = document.createElement('div');
-      icon.className = 'empty-icon';
-      icon.textContent = '✦';
-      const msg = document.createElement('p');
-      if (searchQuery) {
-        msg.textContent = 'No notes match your search.';
-      } else {
-        msg.innerHTML = 'Your collection is empty.<br/>Write your first note above.';
-      }
-      emptyDiv.appendChild(icon);
-      emptyDiv.appendChild(msg);
-      notesGrid.appendChild(emptyDiv);
+      notesGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>
+        <p>${searchQuery ? 'No notes match your search.' : 'Your collection is empty.<br/>Write your first note above.'}</p></div>`;
       noteCountLabel.textContent = ''; updateCounts(); return;
     }
 
@@ -421,7 +407,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
   // ══ OPEN NOTE ══
   function openNote(id) {
-    clearTimeout(autosaveTimer); // cancel any pending autosave from a previously open note
     activeNote = notes.find(n => n.id === id);
     if (!activeNote) return;
     noteTitle.value   = activeNote.title;
